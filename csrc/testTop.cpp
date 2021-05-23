@@ -14,8 +14,8 @@ Vtop* top_module;
 
 __uint32_t testdata[][3] = {
 	/* { function, phase, result } */
-	{SIN, 0x1234, 0xfc2c},
-	{COS, 0x4321, 0xffffd41a}
+	{SIN, 0x0001, 0xfc2c},
+	{COS, 0x1111, 0xffffd41a}
 };
 
 
@@ -35,11 +35,11 @@ void reset_all(){
 void write(__uint32_t addr, __uint32_t wdata) {
 	top_module -> byte_en = 0xf;
 	// Write the phase
-    top_module -> wr = 1;
-    top_module -> addr = addr;
+	top_module -> wr = 1;
+	top_module -> addr = addr;
 	top_module -> wdata = wdata;
 	top -> tick();
-    top_module -> wr = 0;
+	top_module -> wr = 0;
 	// Wait for ~5 cycles for transfer to finish
 	for(int i = 0; i < 5; i++) {
 		top -> tick();
@@ -54,14 +54,18 @@ __uint32_t read(__uint32_t addr) {
 	top_module -> rd = 0;
 	int cnt = 0;
 	do {
-			top -> tick();
-			cnt += 1;
-			if(cnt >= 10) {
-				printf("Waiting rdata for too long!\n");
-				exit(0);
-			}
+		top -> tick();
+		cnt += 1;
+		if(cnt >= 10) {
+			printf("Waiting rdata for too long!\n");
+			exit(0);
+		}
 	} while(top_module -> rdata_v == 0);
-	return top_module -> rdata;
+	__uint32_t ret = top_module -> rdata;
+	for(int i = 0; i < 5; i++) {
+		top -> tick();
+	}
+	return ret;
 }
 
 __uint32_t test(int func, __uint32_t phase, __uint32_t result) {
@@ -79,7 +83,7 @@ int main(int argc, char** argv, char** env) {
 	top -> opentrace("debug.vcd");
 	top_module = top -> dut;
 
-    reset_all();
+	reset_all();
 
 	printf("Test Start!\n");
 	int num_testpoint_passed = 0;
@@ -92,10 +96,10 @@ int main(int argc, char** argv, char** env) {
 		int testret = test(testdata[i][0], testdata[i][1], testdata[i][2]);
 		printf("got 0x%x. ", testret);
 		if(testret == testdata[i][2]) { 
-				printf("PASSED!");
-				num_testpoint_passed += 1;
+			printf("PASSED!");
+			num_testpoint_passed += 1;
 		} else {
-				printf("FAILED!");
+			printf("FAILED!");
 		}
 		printf("\n");
 	}
