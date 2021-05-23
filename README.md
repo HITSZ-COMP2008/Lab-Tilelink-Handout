@@ -5,3 +5,5 @@
 - 可以将cordic模块作为测试用例，自行给定输入，采集相应输出，并将测试用例追加到`csrc/testTop.cpp`
 
 - 使用`make debug`打开波形
+
+- 只允许修改`slave.v`文件
