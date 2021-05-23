@@ -12,10 +12,14 @@
 TESTBENCH<Vtop>* top;
 Vtop* top_module;
 
+// Example testbench
+// You can add yours below
 __uint32_t testdata[][3] = {
 	/* { function, phase, result } */
-	{SIN, 0x0001, 0xfc2c},
-	{COS, 0x1111, 0xffffd41a}
+	{SIN, 0x1000a, 0xfc1b},
+	{SIN, 0x10014, 0xf08c},
+	{COS, 0x1000a, 0xffffd38d},
+	{COS, 0x10014, 0xffffa872}
 };
 
 
